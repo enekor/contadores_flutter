@@ -1,26 +1,12 @@
 import 'package:flutter/widgets.dart';
-
 import 'contador.dart';
 
 class Listado {
-  static Listado? listadoInstance;
+  static final Listado _listadoInstance = Listado._internal();
   List<Contador> contadores = [];
 
-  static Listado getInstace() {
-    listadoInstance ??= Listado();
-    return listadoInstance!;
+  factory Listado() {
+    return _listadoInstance;
   }
-
-  void addItem(Contador c) {
-    contadores.add(c);
-    contadores.forEach((e) => debugPrint(e.nombre));
-  }
-
-  void editItem(Contador c, int pos) {
-    contadores[pos] = c;
-  }
-
-  void deleteItem(int pos) {
-    contadores.remove(contadores[pos]);
-  }
+  Listado._internal();
 }

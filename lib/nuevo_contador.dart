@@ -85,23 +85,20 @@ class _NuevoContadorState extends State<NuevoContador> {
 
   void checkFields() {
     try {
-      int.parse(contador_inicial);
-      setState(() {
-        fallido = false;
-      });
-      guardarContador();
-    } catch (e) {
-      debugPrint('fallido');
-      setState(() {
-        fallido = true;
-      });
+      Contador c = Contador(nombre, int.parse(contador_inicial));
+      setState(
+        () {
+          Listado().contadores.add(c);
+          fallido = false;
+        },
+      );
+      debugPrint('${c.nombre},${c.cuenta},${c.imagen}');
+    } on FormatException {
+      setState(
+        () {
+          fallido = true;
+        },
+      );
     }
-  }
-
-  void guardarContador() {
-    setState(() {
-      Contador c = Contador(nombre, contador_inicial);
-      Listado.getInstace().addItem(c);
-    });
   }
 }
