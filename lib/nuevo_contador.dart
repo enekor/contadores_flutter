@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
@@ -14,6 +13,7 @@ class _NuevoContadorState extends State<NuevoContador> {
   String nombre = '';
   String contador_inicial = '0';
   bool fallido = false;
+  bool nombreFallido = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,37 +33,61 @@ class _NuevoContadorState extends State<NuevoContador> {
                 height: 300,
                 width: 300,
               ),
+              const SizedBox(height: 5),
               OutlinedButton(
                 onPressed: () {},
                 child: const Text('cambiar imagen'),
               ),
               const SizedBox(height: 40.0),
               TextField(
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                    borderSide: BorderSide(color: Colors.purple),
+                decoration: InputDecoration(
+                  suffixIcon: const Icon(
+                    Icons.abc_rounded,
+                    color: Colors.purple,
                   ),
                   labelText: 'Nombre',
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                    borderSide: BorderSide(
+                      color: nombreFallido == true ? Colors.red : Colors.purple,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color:
+                            nombreFallido == true ? Colors.red : Colors.purple),
+                  ),
                 ),
                 onChanged: (valor) => setState(() => nombre = valor),
               ),
               const SizedBox(height: 40.0),
               TextField(
                 decoration: InputDecoration(
-                  labelText: '0',
+                  suffixIcon: const Icon(
+                    Icons.numbers_rounded,
+                    color: Colors.purple,
+                  ),
+                  labelText: 'Contador inicial',
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
                     borderSide: BorderSide(
                       color: fallido == true ? Colors.red : Colors.purple,
                     ),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: fallido == true ? Colors.red : Colors.purple),
+                  ),
                 ),
                 onChanged: (valor) => setState(
                   () {
                     setState(
                       () {
-                        contador_inicial = valor;
+                        if (valor == "") {
+                          contador_inicial = '0';
+                        } else {
+                          contador_inicial = valor;
+                        }
                       },
                     );
                   },
@@ -84,24 +108,32 @@ class _NuevoContadorState extends State<NuevoContador> {
   }
 
   void checkFields() {
-    try {
-      Contador c = Contador(nombre, int.parse(contador_inicial));
-      setState(
-        () {
-          succedSnacker();
-          Listado().contadores.add(c);
-          fallido = false;
-        },
-      );
-      debugPrint('${c.nombre},${c.cuenta},${c.imagen}');
-    } on FormatException {
-      setState(
-        () {
-          failSnacker();
-          fallido = true;
-          contador_inicial = '0';
-        },
-      );
+    if (nombre != "") {
+      nombreFallido = false;
+      try {
+        Contador c = Contador(nombre, int.parse(contador_inicial));
+        setState(
+          () {
+            succedSnacker();
+            Listado().contadores.add(c);
+            fallido = false;
+          },
+        );
+        debugPrint('${c.nombre},${c.cuenta},${c.imagen}');
+      } on FormatException {
+        setState(
+          () {
+            failSnacker();
+            fallido = true;
+            contador_inicial = '0';
+          },
+        );
+      }
+    } else {
+      setState(() {
+        nombreFallido = true;
+      });
+      failSnacker();
     }
   }
 
@@ -123,7 +155,7 @@ class _NuevoContadorState extends State<NuevoContador> {
           ],
         ),
       ),
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 100),
       backgroundColor: Colors.red,
     );
 
@@ -148,7 +180,7 @@ class _NuevoContadorState extends State<NuevoContador> {
           ],
         ),
       ),
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 100),
       backgroundColor: Colors.green,
     );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/model/listado.dart';
 import 'package:untitled/nuevo_contador.dart';
 import 'package:untitled/ver_contadores.dart';
 
@@ -34,7 +35,8 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contadores'),
+        title: Text(
+            'Contadores actuales ${Listado().contadores.length.toString()}'),
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
