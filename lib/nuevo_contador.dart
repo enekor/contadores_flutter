@@ -75,7 +75,7 @@ class _NuevoContadorState extends State<NuevoContador> {
                   checkFields();
                 },
                 child: const Text('Guardar'),
-              )
+              ),
             ],
           ),
         ),
@@ -88,6 +88,7 @@ class _NuevoContadorState extends State<NuevoContador> {
       Contador c = Contador(nombre, int.parse(contador_inicial));
       setState(
         () {
+          succedSnacker();
           Listado().contadores.add(c);
           fallido = false;
         },
@@ -96,9 +97,61 @@ class _NuevoContadorState extends State<NuevoContador> {
     } on FormatException {
       setState(
         () {
+          failSnacker();
           fallido = true;
+          contador_inicial = '0';
         },
       );
     }
+  }
+
+  void failSnacker() {
+    var mensaje = SnackBar(
+      content: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(
+              Icons.warning_rounded,
+              color: Colors.white,
+              size: 68,
+            ),
+            Text(
+              'no ha introducido un contador valido',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: Colors.red,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(mensaje);
+  }
+
+  void succedSnacker() {
+    var mensaje = SnackBar(
+      content: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 68,
+            ),
+            Text(
+              'Contador guardado',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: Colors.green,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(mensaje);
   }
 }
