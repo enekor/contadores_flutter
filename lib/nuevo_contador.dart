@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
@@ -14,6 +15,8 @@ class _NuevoContadorState extends State<NuevoContador> {
   String contador_inicial = '0';
   bool fallido = false;
   bool nombreFallido = false;
+  String imagen = 'https://cdn-icons-png.flaticon.com/512/16/16642.png';
+  String imagenSeleciconada = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +32,40 @@ class _NuevoContadorState extends State<NuevoContador> {
               ),
               const SizedBox(height: 40.0),
               Image.network(
-                'https://cdn-icons-png.flaticon.com/512/16/16642.png',
+                imagen,
                 height: 300,
                 width: 300,
               ),
               const SizedBox(height: 5),
+              TextField(
+                decoration: InputDecoration(
+                  suffixIcon: const Icon(
+                    Icons.link_rounded,
+                    color: Colors.purple,
+                  ),
+                  labelText: 'URL (.png | .jpg | .jpeg)',
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                    borderSide: BorderSide(
+                      color: imagenSeleciconada == 'error'
+                          ? Colors.red
+                          : Colors.purple,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: imagenSeleciconada == 'error'
+                            ? Colors.red
+                            : Colors.purple),
+                  ),
+                ),
+                onChanged: (valor) =>
+                    setState(() => imagenSeleciconada = valor),
+              ),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  setImagen();
+                },
                 child: const Text('cambiar imagen'),
               ),
               const SizedBox(height: 40.0),
@@ -111,7 +141,7 @@ class _NuevoContadorState extends State<NuevoContador> {
     if (nombre != "") {
       nombreFallido = false;
       try {
-        Contador c = Contador(nombre, int.parse(contador_inicial));
+        Contador c = Contador(nombre, int.parse(contador_inicial), imagen);
         setState(
           () {
             succedSnacker();
@@ -155,7 +185,7 @@ class _NuevoContadorState extends State<NuevoContador> {
           ],
         ),
       ),
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 300),
       backgroundColor: Colors.red,
     );
 
@@ -180,10 +210,25 @@ class _NuevoContadorState extends State<NuevoContador> {
           ],
         ),
       ),
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 300),
       backgroundColor: Colors.green,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(mensaje);
+  }
+
+  setImagen() {
+    if (imagenSeleciconada.endsWith('.png') ||
+        imagenSeleciconada.endsWith('.jpg') ||
+        imagenSeleciconada.endsWith('.jpeg')) {
+      setState(() {
+        imagen = imagenSeleciconada;
+      });
+    } else {
+      setState(() {
+        imagenSeleciconada = 'error';
+      });
+      failSnacker();
+    }
   }
 }
