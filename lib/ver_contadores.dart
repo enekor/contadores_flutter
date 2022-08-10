@@ -15,115 +15,145 @@ class VerContadores extends StatefulWidget {
 class _VerContadoresState extends State<VerContadores> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ListView.builder(
-          itemCount: Listado().contadores.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-                margin: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  bottom: 1,
-                  top: 20,
-                ),
-                child: item(contadoresList[index], index));
-          }),
-    );
+    Orientation orientation = MediaQuery.of(context).orientation;
+    return orientation == Orientation.portrait
+        ? Center(
+            child: ListView.builder(
+                itemCount: Listado().contadores.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 1,
+                        top: 20,
+                      ),
+                      child: item(contadoresList[index], index, orientation));
+                }),
+          )
+        : Container(
+            margin: const EdgeInsets.only(left: 5, right: 5, top: 10),
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 600,
+                  childAspectRatio: 8 / 3,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5),
+              itemCount: contadoresList.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  item(contadoresList[index], index, orientation),
+            ),
+          );
   }
 
-  ClipRRect item(Contador c, int index) => ClipRRect(
-        borderRadius: BorderRadius.circular(26),
-        child: Container(
+  Widget item(Contador c, int index, Orientation o) => Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26),
           color: const Color.fromARGB(41, 165, 3, 174),
-          child: cardItem(index),
         ),
+        child: cardItem(index, o),
       );
 
-  Widget cardItem(int index) => GestureDetector(
-        onTap: () {
-          openItemView(index);
-        },
+  Widget cardItem(int index, Orientation o) {
+    double margenTop = o == Orientation.landscape ? 25 : 0;
+    return GestureDetector(
+      onTap: () {
+        openItemView(index);
+      },
+      child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
-              child: Image.network(
-                contadoresList[index].imagen!,
-                height: 150,
-                width: 150,
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
+                child: Image.network(
+                  contadoresList[index].imagen!,
+                  height: 100,
+                  width: 100,
+                ),
               ),
             ),
-            Column(
-              children: [
-                Text(
-                  contadoresList[index].nombre!,
-                  style: const TextStyle(fontSize: 30),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  contadoresList[index].cuenta!.toString(),
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Expanded(
+              flex: 6,
+              child: Container(
+                margin: EdgeInsets.only(
+                    top: contadoresList[index].nombre!.length > 10 ? 20 : 5),
+                child: Column(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        editarContador(false, contadoresList[index], index);
-                      },
-                      icon: const Icon(
-                        Icons.remove_circle,
-                        color: Colors.red,
-                      ),
-                      iconSize: 50,
-                      hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                    Text(
+                      contadoresList[index].nombre!,
+                      style: TextStyle(
+                          fontSize: contadoresList[index].nombre!.length > 10
+                              ? 15
+                              : 30),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        editarContador(true, contadoresList[index], index);
-                      },
-                      icon: const Icon(
-                        Icons.add_circle,
-                        color: Colors.green,
-                      ),
-                      iconSize: 50,
-                      hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                    Text(
+                      contadoresList[index].cuenta!.toString(),
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            editarContador(false, contadoresList[index], index);
+                          },
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                          iconSize: 40,
+                          hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            editarContador(true, contadoresList[index], index);
+                          },
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.green,
+                          ),
+                          iconSize: 40,
+                          hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-            Container(
-                margin: const EdgeInsets.only(right: 15),
-                child: Center(
-                  child: Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            snacker(contadoresList[index]);
-                          },
-                          icon: const Icon(
-                            Icons.recycling_rounded,
-                            color: Colors.deepOrange,
-                          ),
-                          iconSize: 30,
-                          hoverColor: const Color.fromARGB(0, 76, 175, 79)),
-                      const Text(
-                        'Delete',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ))
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: EdgeInsets.only(right: 15, top: margenTop),
+                child: Column(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          snacker(contadoresList[index]);
+                        },
+                        icon: const Icon(
+                          Icons.recycling_rounded,
+                          color: Colors.deepOrange,
+                        ),
+                        iconSize: 30,
+                        hoverColor: const Color.fromARGB(0, 76, 175, 79)),
+                    const Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
-      );
+      ),
+    );
+  }
 
   void snacker(Contador c) {
     var mensaje = SnackBar(
