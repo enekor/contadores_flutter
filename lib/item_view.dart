@@ -16,89 +16,183 @@ class _ItemViewerState extends State<ItemViewer> {
 
   @override
   Widget build(BuildContext context) {
+    Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
         title: Text(c.nombre!),
       ),
-      body: screenLayout(),
+      body: Container(
+        margin: const EdgeInsets.all(20),
+        child: screenLayout(orientation),
+      ),
     );
   }
 
-  Widget screenLayout() {
-    return Container(
-      margin: const EdgeInsets.all(45),
-      child: SingleChildScrollView(
-        child: Center(
-          child: Column(
+  Widget screenLayout(Orientation o) =>
+      o == Orientation.landscape ? horizontalView() : verticalView();
+
+  Widget horizontalView() => Center(
+        child: SingleChildScrollView(
+          child: Row(
             children: [
-              Image.network(
-                c.imagen!,
-                height: 200,
-                width: 200,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                c.cuenta!.toString(),
-                style: const TextStyle(fontSize: 45),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  suffixIcon: const Icon(
-                    Icons.numbers_rounded,
-                    color: Colors.purple,
-                  ),
-                  labelText: 'Contador',
-                  labelStyle: const TextStyle(fontSize: 25),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                    borderSide: BorderSide(
-                      color:
-                          numeroInvalido == true ? Colors.red : Colors.purple,
+              Expanded(
+                flex: 5,
+                child: Column(
+                  children: [
+                    Image.network(
+                      c.imagen!,
+                      height: 200,
+                      width: 200,
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: numeroInvalido == true
-                            ? Colors.red
-                            : Colors.purple),
-                  ),
+                    const SizedBox(height: 20),
+                    Text(
+                      c.cuenta!.toString(),
+                      style: const TextStyle(fontSize: 45),
+                    ),
+                  ],
                 ),
-                onChanged: (valor) => checkNumber(valor),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      editCounter(false);
-                    },
-                    icon: const Icon(
-                      Icons.remove_circle_outline_rounded,
-                      color: Colors.red,
+              Expanded(
+                flex: 5,
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        suffixIcon: const Icon(
+                          Icons.numbers_rounded,
+                          color: Colors.purple,
+                        ),
+                        labelText: 'Contador',
+                        labelStyle: const TextStyle(fontSize: 25),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                          borderSide: BorderSide(
+                            color: numeroInvalido == true
+                                ? Colors.red
+                                : Colors.purple,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: numeroInvalido == true
+                                  ? Colors.red
+                                  : Colors.purple),
+                        ),
+                      ),
+                      onChanged: (valor) => checkNumber(valor),
                     ),
-                    iconSize: 85,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      editCounter(true);
-                    },
-                    icon: const Icon(
-                      Icons.add_circle_outline_rounded,
-                      color: Colors.green,
+                    const SizedBox(
+                      height: 10,
                     ),
-                    iconSize: 85,
-                  ),
-                ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            editCounter(false);
+                          },
+                          icon: const Icon(
+                            Icons.remove_circle_outline_rounded,
+                            color: Colors.red,
+                          ),
+                          iconSize: 85,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            editCounter(true);
+                          },
+                          icon: const Icon(
+                            Icons.add_circle_outline_rounded,
+                            color: Colors.green,
+                          ),
+                          iconSize: 85,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
+
+  Widget verticalView() => Center(
+        child: Container(
+          margin: const EdgeInsets.all(45),
+          child: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  Image.network(
+                    c.imagen!,
+                    height: 200,
+                    width: 200,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    c.cuenta!.toString(),
+                    style: const TextStyle(fontSize: 45),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      suffixIcon: const Icon(
+                        Icons.numbers_rounded,
+                        color: Colors.purple,
+                      ),
+                      labelText: 'Contador',
+                      labelStyle: const TextStyle(fontSize: 25),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: BorderSide(
+                          color: numeroInvalido == true
+                              ? Colors.red
+                              : Colors.purple,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: numeroInvalido == true
+                                ? Colors.red
+                                : Colors.purple),
+                      ),
+                    ),
+                    onChanged: (valor) => checkNumber(valor),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          editCounter(false);
+                        },
+                        icon: const Icon(
+                          Icons.remove_circle_outline_rounded,
+                          color: Colors.red,
+                        ),
+                        iconSize: 85,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          editCounter(true);
+                        },
+                        icon: const Icon(
+                          Icons.add_circle_outline_rounded,
+                          color: Colors.green,
+                        ),
+                        iconSize: 85,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 
   checkNumber(String valor) {
     if (valor == "") {

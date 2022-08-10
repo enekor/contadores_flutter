@@ -56,7 +56,6 @@ class _VerContadoresState extends State<VerContadores> {
       );
 
   Widget cardItem(int index, Orientation o) {
-    double margenTop = o == Orientation.landscape ? 25 : 0;
     return GestureDetector(
       onTap: () {
         openItemView(index);
@@ -128,7 +127,8 @@ class _VerContadoresState extends State<VerContadores> {
             Expanded(
               flex: 2,
               child: Container(
-                margin: EdgeInsets.only(right: 15, top: margenTop),
+                margin: EdgeInsets.only(
+                    right: 15, top: o == Orientation.landscape ? 30 : 0),
                 child: Column(
                   children: [
                     IconButton(
