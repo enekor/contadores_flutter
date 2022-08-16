@@ -19,7 +19,7 @@ class _ItemViewerState extends State<ItemViewer> {
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
-        title: Text(c.nombre!),
+        title: Text(c.nombre),
       ),
       body: Container(
         margin: const EdgeInsets.all(20),
@@ -40,13 +40,13 @@ class _ItemViewerState extends State<ItemViewer> {
                 child: Column(
                   children: [
                     Image.network(
-                      c.imagen!,
+                      c.imagen,
                       height: 200,
                       width: 200,
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      c.cuenta!.toString(),
+                      c.cuenta.toString(),
                       style: const TextStyle(fontSize: 45),
                     ),
                   ],
@@ -125,13 +125,13 @@ class _ItemViewerState extends State<ItemViewer> {
               child: Column(
                 children: [
                   Image.network(
-                    c.imagen!,
+                    c.imagen,
                     height: 200,
                     width: 200,
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    c.cuenta!.toString(),
+                    c.cuenta.toString(),
                     style: const TextStyle(fontSize: 45),
                   ),
                   TextField(
@@ -187,6 +187,13 @@ class _ItemViewerState extends State<ItemViewer> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
+                  TextButton(
+                    onPressed: cambiarInfo,
+                    child: Text(c.info != ''
+                        ? c.info
+                        : 'Toca para estalecer informacion del contador'),
+                  ),
                 ],
               ),
             ),
@@ -219,16 +226,58 @@ class _ItemViewerState extends State<ItemViewer> {
     if (sumar) {
       setState(() {
         Listado().contadores[Listado().actual].cuenta =
-            Listado().contadores[Listado().actual].cuenta! + contador;
+            Listado().contadores[Listado().actual].cuenta + contador;
       });
     } else {
-      setState(() {
-        Listado().contadores[Listado().actual].cuenta =
-            Listado().contadores[Listado().actual].cuenta! - contador;
-        if (Listado().contadores[Listado().actual].cuenta! <= 0) {
-          Listado().contadores[Listado().actual].cuenta = 0;
-        }
-      });
+      setState(
+        () {
+          Listado().contadores[Listado().actual].cuenta =
+              Listado().contadores[Listado().actual].cuenta - contador;
+          if (Listado().contadores[Listado().actual].cuenta <= 0) {
+            Listado().contadores[Listado().actual].cuenta = 0;
+          }
+        },
+      );
     }
+  }
+
+  void cambiarInfo() {
+    String texto = '';
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 400,
+          child: Container(
+            margin: const EdgeInsets.all(20),
+            child: Center(
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 9,
+                    child: TextFormField(
+                      onChanged: (valor) => texto = valor,
+                      initialValue: c.info,
+                      maxLines: null,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            c.info = texto;
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: const Text('guardar')),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

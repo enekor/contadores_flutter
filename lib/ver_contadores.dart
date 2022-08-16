@@ -69,7 +69,7 @@ class _VerContadoresState extends State<VerContadores> {
               child: Container(
                 margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
                 child: Image.network(
-                  contadoresList[index].imagen!,
+                  contadoresList[index].imagen,
                   height: 100,
                   width: 100,
                 ),
@@ -79,18 +79,18 @@ class _VerContadoresState extends State<VerContadores> {
               flex: 6,
               child: Container(
                 margin: EdgeInsets.only(
-                    top: contadoresList[index].nombre!.length > 10 ? 20 : 5),
+                    top: contadoresList[index].nombre.length > 10 ? 20 : 5),
                 child: Column(
                   children: [
                     Text(
-                      contadoresList[index].nombre!,
+                      contadoresList[index].nombre,
                       style: TextStyle(
-                          fontSize: contadoresList[index].nombre!.length > 10
+                          fontSize: contadoresList[index].nombre.length > 10
                               ? 15
                               : 30),
                     ),
                     Text(
-                      contadoresList[index].cuenta!.toString(),
+                      contadoresList[index].cuenta.toString(),
                       style: const TextStyle(fontSize: 20),
                     ),
                     Row(
@@ -193,13 +193,13 @@ class _VerContadoresState extends State<VerContadores> {
   void editarContador(bool suma, Contador c, int index) {
     if (suma) {
       setState(() {
-        c.cuenta = c.cuenta! + 1;
+        c.cuenta = c.cuenta + 1;
         Listado().contadores[index] = c;
       });
     } else {
       setState(() {
         if (c.cuenta != 0) {
-          c.cuenta = c.cuenta! - 1;
+          c.cuenta = c.cuenta - 1;
           Listado().contadores[index] = c;
         }
       });

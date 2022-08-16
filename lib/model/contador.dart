@@ -1,7 +1,8 @@
 class Contador {
-  String? nombre;
-  int? cuenta;
-  String? imagen;
+  late String nombre;
+  late int cuenta;
+  late String imagen;
+  late String info;
 
   Contador(String name, [int? count, String? image]) {
     count == null ? cuenta = 0 : cuenta = count;
@@ -10,7 +11,8 @@ class Contador {
         : imagen = image;
 
     nombre = name;
+    info = '';
   }
 
-  String getNombre() => nombre!;
+  String getNombre() => nombre;
 }
