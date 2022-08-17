@@ -3,10 +3,14 @@ import 'package:untitled/item_view.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
 
-var contadoresList = Listado().contadores;
+late List<Contador> contadoresList;
 
 class VerContadores extends StatefulWidget {
-  const VerContadores({Key? key}) : super(key: key);
+  const VerContadores({Key? key, contadores}) : super(key: key);
+  VerContadores VerContadoresConstructor(List<Contador> contadores) {
+    contadoresList = contadores;
+    return const VerContadores();
+  }
 
   @override
   _VerContadoresState createState() => _VerContadoresState();
@@ -19,17 +23,19 @@ class _VerContadoresState extends State<VerContadores> {
     return orientation == Orientation.portrait
         ? Center(
             child: ListView.builder(
-                itemCount: Listado().contadores.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                      margin: const EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                        bottom: 1,
-                        top: 20,
-                      ),
-                      child: item(contadoresList[index], index, orientation));
-                }),
+              itemCount: Listado().contadores.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                    margin: const EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                      bottom: 1,
+                      top: 20,
+                    ),
+                    child:
+                        item(Listado().contadores[index], index, orientation));
+              },
+            ),
           )
         : Container(
             margin: const EdgeInsets.only(left: 5, right: 5, top: 10),
@@ -39,7 +45,7 @@ class _VerContadoresState extends State<VerContadores> {
                   childAspectRatio: 8 / 3,
                   crossAxisSpacing: 5,
                   mainAxisSpacing: 5),
-              itemCount: contadoresList.length,
+              itemCount: Listado().contadores.length,
               itemBuilder: (BuildContext context, int index) =>
                   item(contadoresList[index], index, orientation),
             ),
@@ -69,7 +75,7 @@ class _VerContadoresState extends State<VerContadores> {
               child: Container(
                 margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
                 child: Image.network(
-                  contadoresList[index].imagen,
+                  Listado().contadores[index].imagen!,
                   height: 100,
                   width: 100,
                 ),
@@ -79,18 +85,21 @@ class _VerContadoresState extends State<VerContadores> {
               flex: 6,
               child: Container(
                 margin: EdgeInsets.only(
-                    top: contadoresList[index].nombre.length > 10 ? 20 : 5),
+                    top: Listado().contadores[index].nombre!.length > 10
+                        ? 20
+                        : 5),
                 child: Column(
                   children: [
                     Text(
-                      contadoresList[index].nombre,
+                      Listado().contadores[index].nombre!,
                       style: TextStyle(
-                          fontSize: contadoresList[index].nombre.length > 10
-                              ? 15
-                              : 30),
+                          fontSize:
+                              Listado().contadores[index].nombre!.length > 10
+                                  ? 15
+                                  : 30),
                     ),
                     Text(
-                      contadoresList[index].cuenta.toString(),
+                      Listado().contadores[index].contador.toString(),
                       style: const TextStyle(fontSize: 20),
                     ),
                     Row(
@@ -193,13 +202,13 @@ class _VerContadoresState extends State<VerContadores> {
   void editarContador(bool suma, Contador c, int index) {
     if (suma) {
       setState(() {
-        c.cuenta = c.cuenta + 1;
+        c.contador = c.contador! + 1;
         Listado().contadores[index] = c;
       });
     } else {
       setState(() {
-        if (c.cuenta != 0) {
-          c.cuenta = c.cuenta - 1;
+        if (c.contador != 0) {
+          c.contador = c.contador! - 1;
           Listado().contadores[index] = c;
         }
       });

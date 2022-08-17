@@ -19,7 +19,7 @@ class _ItemViewerState extends State<ItemViewer> {
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
-        title: Text(c.nombre),
+        title: Text(c.nombre!),
       ),
       body: Container(
         margin: const EdgeInsets.all(20),
@@ -40,13 +40,13 @@ class _ItemViewerState extends State<ItemViewer> {
                 child: Column(
                   children: [
                     Image.network(
-                      c.imagen,
+                      c.imagen!,
                       height: 200,
                       width: 200,
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      c.cuenta.toString(),
+                      c.contador.toString(),
                       style: const TextStyle(fontSize: 45),
                     ),
                   ],
@@ -125,13 +125,13 @@ class _ItemViewerState extends State<ItemViewer> {
               child: Column(
                 children: [
                   Image.network(
-                    c.imagen,
+                    c.imagen!,
                     height: 200,
                     width: 200,
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    c.cuenta.toString(),
+                    c.contador.toString(),
                     style: const TextStyle(fontSize: 45),
                   ),
                   TextField(
@@ -190,8 +190,8 @@ class _ItemViewerState extends State<ItemViewer> {
                   const SizedBox(height: 20),
                   TextButton(
                     onPressed: cambiarInfo,
-                    child: Text(c.info != ''
-                        ? c.info
+                    child: Text(c.informacion != ''
+                        ? c.informacion!
                         : 'Toca para estalecer informacion del contador'),
                   ),
                 ],
@@ -225,16 +225,16 @@ class _ItemViewerState extends State<ItemViewer> {
   editCounter(bool sumar) {
     if (sumar) {
       setState(() {
-        Listado().contadores[Listado().actual].cuenta =
-            Listado().contadores[Listado().actual].cuenta + contador;
+        Listado().contadores[Listado().actual].contador =
+            Listado().contadores[Listado().actual].contador! + contador;
       });
     } else {
       setState(
         () {
-          Listado().contadores[Listado().actual].cuenta =
-              Listado().contadores[Listado().actual].cuenta - contador;
-          if (Listado().contadores[Listado().actual].cuenta <= 0) {
-            Listado().contadores[Listado().actual].cuenta = 0;
+          Listado().contadores[Listado().actual].contador =
+              Listado().contadores[Listado().actual].contador! - contador;
+          if (Listado().contadores[Listado().actual].contador! <= 0) {
+            Listado().contadores[Listado().actual].contador = 0;
           }
         },
       );
@@ -257,7 +257,7 @@ class _ItemViewerState extends State<ItemViewer> {
                     flex: 9,
                     child: TextFormField(
                       onChanged: (valor) => texto = valor,
-                      initialValue: c.info,
+                      initialValue: c.informacion,
                       maxLines: null,
                     ),
                   ),
@@ -266,7 +266,7 @@ class _ItemViewerState extends State<ItemViewer> {
                     child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            c.info = texto;
+                            c.informacion = texto;
                           });
                           Navigator.pop(context);
                         },

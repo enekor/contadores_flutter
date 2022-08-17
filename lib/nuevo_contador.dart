@@ -313,7 +313,11 @@ class _NuevoContadorState extends State<NuevoContador> {
     if (nombre != "" && nombreFallido != true) {
       nombreFallido = false;
       try {
-        Contador c = Contador(nombre, int.parse(contador_inicial), imagen);
+        Contador c = Contador(
+            nombre: nombre,
+            contador: int.parse(contador_inicial),
+            imagen: imagen);
+
         setState(
           () {
             succedSnacker();
@@ -321,7 +325,7 @@ class _NuevoContadorState extends State<NuevoContador> {
             fallido = false;
           },
         );
-        debugPrint('${c.nombre},${c.cuenta},${c.imagen}');
+        debugPrint('${c.nombre},${c.contador},${c.imagen}');
       } on FormatException {
         setState(
           () {
