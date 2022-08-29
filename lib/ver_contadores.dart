@@ -1,14 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:untitled/item_view.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
-
-late List<Contador> contadoresList;
+import 'package:http/http.dart' as http;
+import 'package:untitled/model/snackers.dart';
 
 class VerContadores extends StatefulWidget {
   const VerContadores({Key? key, contadores}) : super(key: key);
   VerContadores VerContadoresConstructor(List<Contador> contadores) {
-    contadoresList = contadores;
     return const VerContadores();
   }
 
@@ -47,7 +49,7 @@ class _VerContadoresState extends State<VerContadores> {
                   mainAxisSpacing: 5),
               itemCount: Listado().contadores.length,
               itemBuilder: (BuildContext context, int index) =>
-                  item(contadoresList[index], index, orientation),
+                  item(Listado().contadores[index], index, orientation),
             ),
           );
   }
@@ -107,7 +109,8 @@ class _VerContadoresState extends State<VerContadores> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            editarContador(false, contadoresList[index], index);
+                            editarContador(
+                                false, Listado().contadores[index], index);
                           },
                           icon: const Icon(
                             Icons.remove_circle,
@@ -118,7 +121,8 @@ class _VerContadoresState extends State<VerContadores> {
                         ),
                         IconButton(
                           onPressed: () {
-                            editarContador(true, contadoresList[index], index);
+                            editarContador(
+                                true, Listado().contadores[index], index);
                           },
                           icon: const Icon(
                             Icons.add_circle,
@@ -141,18 +145,28 @@ class _VerContadoresState extends State<VerContadores> {
                 child: Column(
                   children: [
                     IconButton(
-                        onPressed: () {
-                          snacker(contadoresList[index]);
-                        },
-                        icon: const Icon(
-                          Icons.recycling_rounded,
-                          color: Colors.deepOrange,
-                        ),
-                        iconSize: 30,
-                        hoverColor: const Color.fromARGB(0, 76, 175, 79)),
-                    const Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.red),
+                      onPressed: () => ScaffoldMessenger.of(context)
+                          .showSnackBar(Snacker().confirmSnack(
+                              Listado().contadores[index],
+                              context,
+                              borrarItem)),
+                      icon: const Icon(
+                        Icons.recycling_rounded,
+                        color: Colors.deepOrange,
+                      ),
+                      iconSize: 30,
+                      hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        uploadItem(Listado().contadores[index], index);
+                      },
+                      icon: const Icon(
+                        Icons.upload_rounded,
+                        color: Colors.deepOrange,
+                      ),
+                      iconSize: 30,
+                      hoverColor: const Color.fromARGB(0, 76, 175, 79),
                     ),
                   ],
                 ),
@@ -162,39 +176,6 @@ class _VerContadoresState extends State<VerContadores> {
         ),
       ),
     );
-  }
-
-  void snacker(Contador c) {
-    var mensaje = SnackBar(
-      duration: const Duration(seconds: 10),
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text('Borrar elemento ${c.nombre}?'),
-          IconButton(
-            onPressed: () {
-              borrarItem(c);
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-            icon: const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-            icon: const Icon(
-              Icons.cancel_rounded,
-              color: Colors.red,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(mensaje);
   }
 
   void borrarItem(Contador c) => setState(() => Listado().contadores.remove(c));
@@ -221,5 +202,57 @@ class _VerContadoresState extends State<VerContadores> {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (BuildContext context) => const ItemViewer()),
     );
+  }
+
+  uploadItem(Contador c, int index) async {
+    late var uri;
+    if (Platform.isAndroid) {
+      uri = Uri.parse('http://192.168.1.138:7777/contadores/add');
+    } else {
+      uri = Uri.parse('http://localhost:7777/contadores/add');
+    }
+
+    try {
+      var ans = await http.post(
+        uri,
+        body: jsonEncode(c),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      debugPrint(jsonEncode(c));
+
+      Contador ansContador = Contador.fromJson(jsonDecode(ans.body));
+      Listado().contadores[index].id = ansContador.id!;
+
+      showSnack(
+        Snacker().simpleSnack(
+          'Contador subido correctamente',
+          const Color.fromARGB(255, 2, 204, 42),
+          const Icon(
+            Icons.check_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
+      );
+    } catch (e) {
+      showSnack(
+        Snacker().simpleSnack(
+          'Ha habido un problema con la red, vuelve a intentarlo mas tarde',
+          const Color.fromARGB(255, 208, 11, 0),
+          const Icon(
+            Icons.warning_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
+      );
+    }
+  }
+
+  showSnack(SnackBar snack) {
+    ScaffoldMessenger.of(context).showSnackBar(snack);
   }
 }

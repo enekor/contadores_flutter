@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:untitled/adquirir_desde_api.dart';
 import 'package:untitled/model/listado.dart';
 import 'package:untitled/nuevo_contador.dart';
 import 'package:untitled/ver_contadores.dart';
 
 import 'model/contador.dart';
-import 'package:http/http.dart' as http;
 
 List<Contador> contadores = [];
 void main(List<String> args) {
@@ -26,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.purple),
-      home: RootPage(),
+      home: const RootPage(),
     );
   }
 }
@@ -42,7 +40,8 @@ class _RootPageState extends State<RootPage> {
   int pagina = 0;
   var paginas = [
     const VerContadores().VerContadoresConstructor(contadores),
-    const NuevoContador()
+    const NuevoContador(),
+    const AdquirirDesdeApi(),
   ];
 
   @override
@@ -51,10 +50,6 @@ class _RootPageState extends State<RootPage> {
       appBar: AppBar(
         title: Text(
             'Contadores actuales ${Listado().contadores.length.toString()}'),
-        actions: [
-          IconButton(
-              onPressed: loadItems, icon: const Icon(Icons.download_rounded))
-        ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
@@ -65,35 +60,17 @@ class _RootPageState extends State<RootPage> {
           NavigationDestination(
             icon: Icon(Icons.add, color: Colors.blueGrey),
             label: 'Nuevo contador',
-          )
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.download_rounded, color: Colors.blueGrey),
+            label: 'Descargar',
+          ),
         ],
         onDestinationSelected: (int selected) =>
             setState(() => pagina = selected),
         selectedIndex: pagina,
       ),
-      body: pagina == 0 ? paginas[0] : paginas[1],
+      body: paginas[pagina],
     );
-  }
-
-  loadItems() async {
-    var url = Uri.parse('http://localhost:7777/contadores/all');
-    var ans = await http.get(url);
-
-    if (ans.statusCode == 200 || ans.statusCode == 300) {
-      debugPrint('tiene contendo');
-      ContadoresBD contans = ContadoresBD.fromJson(jsonDecode(ans.body));
-
-      setState(() {
-        Listado().contadores = contans.content!;
-      });
-
-      debugPrint(Listado().contadores.length.toString());
-    } else {
-      debugPrint('no tiene contenido');
-
-      setState(() {
-        Listado().contadores = [];
-      });
-    }
   }
 }

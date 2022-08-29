@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
+import 'package:untitled/model/snackers.dart';
 
 class NuevoContador extends StatefulWidget {
   const NuevoContador({Key? key}) : super(key: key);
@@ -316,11 +317,12 @@ class _NuevoContadorState extends State<NuevoContador> {
         Contador c = Contador(
             nombre: nombre,
             contador: int.parse(contador_inicial),
-            imagen: imagen);
+            imagen: imagen,
+            informacion: "");
 
         setState(
           () {
-            succedSnacker();
+            showSnack(Snacker().succedSnacker());
             Listado().contadores.add(c);
             fallido = false;
           },
@@ -329,7 +331,7 @@ class _NuevoContadorState extends State<NuevoContador> {
       } on FormatException {
         setState(
           () {
-            failSnacker();
+            showSnack(Snacker().failSnacker());
             fallido = true;
             contador_inicial = '0';
           },
@@ -339,58 +341,12 @@ class _NuevoContadorState extends State<NuevoContador> {
       setState(() {
         nombreFallido = true;
       });
-      failSnacker();
+      showSnack(Snacker().failSnacker());
     }
   }
 
-  void failSnacker() {
-    var mensaje = SnackBar(
-      content: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.warning_rounded,
-              color: Colors.white,
-              size: 68,
-            ),
-            Text(
-              'no ha introducido un contador valido',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-      duration: const Duration(milliseconds: 300),
-      backgroundColor: Colors.red,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(mensaje);
-  }
-
-  void succedSnacker() {
-    var mensaje = SnackBar(
-      content: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.check_rounded,
-              color: Colors.white,
-              size: 68,
-            ),
-            Text(
-              'Contador guardado',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-      duration: const Duration(milliseconds: 300),
-      backgroundColor: Colors.green,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(mensaje);
+  showSnack(SnackBar snack) {
+    ScaffoldMessenger.of(context).showSnackBar(snack);
   }
 
   setImagen() {
@@ -404,7 +360,7 @@ class _NuevoContadorState extends State<NuevoContador> {
       setState(() {
         imagenSeleciconada = 'error';
       });
-      failSnacker();
+      showSnack(Snacker().failSnacker());
     }
   }
 }
