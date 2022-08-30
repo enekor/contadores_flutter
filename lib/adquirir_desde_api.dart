@@ -53,38 +53,29 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
   loadItems() async {
     late var url;
     if (Platform.isAndroid) {
-      url = Uri.parse('http://192.168.1.138:7777/contadores/all');
+      url = Uri.parse('http://192.168.1.138:7777/contadores/active');
     } else {
-      url = Uri.parse('http://localhost:7777/contadores/all');
+      url = Uri.parse('http://localhost:7777/contadores/active');
     }
     try {
       var ans = await http.get(url);
 
-      if (ans.statusCode == 200 || ans.statusCode == 300) {
-        debugPrint('tiene contendo');
-        ContadoresBD contans = ContadoresBD.fromJson(jsonDecode(ans.body));
+      ContadoresBD contans = ContadoresBD.fromJson(jsonDecode(ans.body));
 
-        setState(() {
-          contadores = contans.content!;
-        });
-
-        debugPrint(contadores.length.toString());
-      } else {
-        debugPrint('no tiene contenido');
+      if (contans.content!.isEmpty) {
         showSnacker(
           Snacker().simpleSnack(
-            'No hay contadores en la base de datos',
-            Colors.red,
+            "No hay contadores en la base de datos",
+            const Color.fromARGB(255, 231, 176, 241),
             const Icon(
-              Icons.warning_rounded,
-              color: Colors.white,
-              size: 30,
+              Icons.layers_clear_rounded,
+              color: Colors.blueGrey,
             ),
           ),
         );
-
+      } else {
         setState(() {
-          contadores = [];
+          contadores = contans.content!;
         });
       }
     } catch (e) {
@@ -114,40 +105,65 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
   Widget item(Contador c) {
     return Center(
       child: Card(
-        color: const Color.fromARGB(113, 90, 121, 137),
+        color: const Color.fromARGB(112, 180, 194, 201),
         borderOnForeground: true,
         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
-        elevation: 20,
+        elevation: 10,
         child: Row(
           children: [
             Expanded(
-              flex: 2,
+              flex: 7,
               child: Container(
-                margin: const EdgeInsets.all(20),
-                child: Image.network(c.imagen!, width: 130, height: 130),
+                margin: const EdgeInsets.only(left: 35),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.network(c.imagen!, width: 70, height: 70),
+                    Container(
+                      margin: const EdgeInsets.only(left: 25),
+                      child: Column(
+                        children: [
+                          Text(
+                            c.nombre!,
+                            style: const TextStyle(fontSize: 30),
+                          ),
+                          Text(
+                            c.contador!.toString(),
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(
-              flex: 6,
-              child: Column(
-                children: [
-                  Text(c.nombre!),
-                  Text(c.contador!.toString()),
-                ],
+              flex: 3,
+              child: Center(
+                child: Column(
+                  children: [
+                    IconButton(
+                      onPressed: () => deleteContador(c),
+                      icon: const Icon(
+                        Icons.delete_rounded,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => addItemToList(c),
+                      icon: const Icon(
+                        Icons.add_task_rounded,
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            Expanded(
-              flex: 2,
-              child: IconButton(
-                onPressed: () {
-                  addItemToList(c);
-                },
-                icon: const Icon(Icons.add_task_rounded),
-              ),
-            )
           ],
         ),
       ),
@@ -174,5 +190,26 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
         ),
       ),
     );
+  }
+
+  void deleteContador(Contador c) async {
+    late var url;
+    if (Platform.isAndroid) {
+      url = Uri.parse('http://192.168.1.138:7777/contadores/delete/${c.id}');
+    } else {
+      url = Uri.parse("http://localhost:7777/contadores/delete/${c.id}");
+    }
+    var ans = await http.delete(url);
+
+    if (ans.statusCode == 204) {
+      setState(() => contadores.remove(c));
+      showSnacker(Snacker().simpleSnack('Contador borrado con exito',
+          Colors.green, const Icon(Icons.check_rounded)));
+    } else {
+      showSnacker(Snacker().simpleSnack(
+          'Ha habido un problema, vuelve a intentarlo mas tarde',
+          Colors.red,
+          const Icon(Icons.warning_amber_rounded)));
+    }
   }
 }

@@ -318,7 +318,8 @@ class _NuevoContadorState extends State<NuevoContador> {
             nombre: nombre,
             contador: int.parse(contador_inicial),
             imagen: imagen,
-            informacion: "");
+            informacion: "",
+            activo: true);
 
         setState(
           () {

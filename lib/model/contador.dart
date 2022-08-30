@@ -17,6 +17,8 @@
   String getNombre() => nombre;
 }*/
 
+import 'dart:ffi';
+
 class ContadoresBD {
   List<Contador>? content;
   Pageable? pageable;
@@ -93,9 +95,15 @@ class Contador {
   int? contador;
   String? imagen;
   String? informacion;
+  bool? activo;
 
   Contador(
-      {this.id, this.nombre, this.contador, this.imagen, this.informacion});
+      {this.id,
+      this.nombre,
+      this.contador,
+      this.imagen,
+      this.informacion,
+      this.activo});
 
   Contador.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -103,6 +111,7 @@ class Contador {
     contador = int.parse(json['contador']);
     imagen = json['imagen'];
     informacion = json['informacion'];
+    activo = json['activo'].toString().toLowerCase() == 'true';
   }
 
   Map<String, dynamic> toJson() {
@@ -112,6 +121,7 @@ class Contador {
     data['contador'] = this.contador;
     data['imagen'] = this.imagen;
     data['informacion'] = this.informacion;
+    data['activo'] = this.activo;
     return data;
   }
 }
