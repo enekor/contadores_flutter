@@ -175,21 +175,19 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
   }
 
   void addItemToList(Contador c) {
-    setState(() {
+    var exist = Listado().contadores.firstWhere((element) => element.id == c.id,
+        orElse: () => Contador(nombre: null));
+    if (exist.nombre == null) {
       Listado().contadores.add(c);
-      contadores.remove(c);
-    });
-    showSnacker(
-      Snacker().simpleSnack(
-        'Contador guardado en local',
-        Colors.lightGreenAccent,
-        const Icon(
-          Icons.warning_rounded,
-          color: Colors.white,
-          size: 30,
-        ),
-      ),
-    );
+      showSnacker(Snacker().simpleSnack("Contador agregado correctamente",
+          Colors.green, const Icon(Icons.check_rounded)));
+      setState(() => contadores.remove(c));
+    } else {
+      showSnacker(Snacker().simpleSnack(
+          'Contador existente en local',
+          const Color.fromARGB(255, 231, 176, 241),
+          const Icon(Icons.format_line_spacing_rounded)));
+    }
   }
 
   void deleteContador(Contador c) async {

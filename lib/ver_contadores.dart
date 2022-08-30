@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:untitled/item_view.dart';
 import 'package:untitled/model/contador.dart';
@@ -23,20 +22,23 @@ class _VerContadoresState extends State<VerContadores> {
   Widget build(BuildContext context) {
     Orientation orientation = MediaQuery.of(context).orientation;
     return orientation == Orientation.portrait
-        ? Center(
-            child: ListView.builder(
-              itemCount: Listado().contadores.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                    margin: const EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                      bottom: 1,
-                      top: 20,
-                    ),
-                    child:
-                        item(Listado().contadores[index], index, orientation));
-              },
+        ? Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: Center(
+              child: ListView.builder(
+                itemCount: Listado().contadores.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 1,
+                        top: 1,
+                      ),
+                      child: item(
+                          Listado().contadores[index], index, orientation));
+                },
+              ),
             ),
           )
         : Container(
@@ -57,7 +59,7 @@ class _VerContadoresState extends State<VerContadores> {
   Widget item(Contador c, int index, Orientation o) => Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(26),
+          borderRadius: borderGenerator(index, o),
           color: const Color.fromARGB(41, 165, 3, 174),
         ),
         child: cardItem(index, o),
@@ -254,5 +256,28 @@ class _VerContadoresState extends State<VerContadores> {
 
   showSnack(SnackBar snack) {
     ScaffoldMessenger.of(context).showSnackBar(snack);
+  }
+
+  BorderRadiusGeometry borderGenerator(int pos, Orientation o) {
+    debugPrint(pos.toString());
+    if (o == Orientation.landscape || Listado().contadores.length == 1) {
+      return BorderRadius.circular(25);
+    } else {
+      if (pos == 0) {
+        return const BorderRadius.only(
+            bottomLeft: Radius.circular(5),
+            bottomRight: Radius.circular(5),
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25));
+      } else if (pos == Listado().contadores.length - 1) {
+        return const BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
+            topLeft: Radius.circular(5),
+            topRight: Radius.circular(5));
+      } else {
+        return BorderRadius.circular(5);
+      }
+    }
   }
 }
