@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/item_view.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled/model/snackers.dart';
+import 'package:untitled/model/temas.dart';
 
 class VerContadores extends StatefulWidget {
   const VerContadores({Key? key, contadores}) : super(key: key);
@@ -56,13 +58,15 @@ class _VerContadoresState extends State<VerContadores> {
           );
   }
 
-  Widget item(Contador c, int index, Orientation o) => Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: borderGenerator(index, o),
-          color: const Color.fromARGB(41, 165, 3, 174),
+  Widget item(Contador c, int index, Orientation o) => Obx(
+        () => Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: borderGenerator(index, o),
+            color: Temas().getSecondary(),
+          ),
+          child: cardItem(index, o),
         ),
-        child: cardItem(index, o),
       );
 
   Widget cardItem(int index, Orientation o) {
@@ -97,6 +101,7 @@ class _VerContadoresState extends State<VerContadores> {
                     Text(
                       Listado().contadores[index].nombre!,
                       style: TextStyle(
+                          color: Temas().getTextColor(),
                           fontSize:
                               Listado().contadores[index].nombre!.length > 10
                                   ? 15
@@ -104,7 +109,8 @@ class _VerContadoresState extends State<VerContadores> {
                     ),
                     Text(
                       Listado().contadores[index].contador.toString(),
-                      style: const TextStyle(fontSize: 20),
+                      style: TextStyle(
+                          color: Temas().getTextColor(), fontSize: 20),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

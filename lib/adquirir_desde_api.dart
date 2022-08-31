@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:untitled/model/listado.dart';
 import 'package:untitled/model/snackers.dart';
 import 'model/contador.dart';
+import 'model/temas.dart';
 
 class AdquirirDesdeApi extends StatefulWidget {
   const AdquirirDesdeApi({Key? key}) : super(key: key);
@@ -34,7 +35,12 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
                 ),
                 TextButton(
                   onPressed: loadItems,
-                  child: const Text('Cargar desde la api'),
+                  child: Text(
+                    'Cargar desde la api',
+                    style: TextStyle(
+                      color: Temas().getTextColor(),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -128,11 +134,15 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
                         children: [
                           Text(
                             c.nombre!,
-                            style: const TextStyle(fontSize: 30),
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Temas().getTextColor(),
+                            ),
                           ),
                           Text(
                             c.contador!.toString(),
-                            style: const TextStyle(fontSize: 20),
+                            style: TextStyle(
+                                color: Temas().getTextColor(), fontSize: 20),
                           ),
                         ],
                       ),

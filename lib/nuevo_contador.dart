@@ -3,6 +3,8 @@ import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
 import 'package:untitled/model/snackers.dart';
 
+import 'model/temas.dart';
+
 class NuevoContador extends StatefulWidget {
   const NuevoContador({Key? key}) : super(key: key);
 
@@ -33,9 +35,12 @@ class _NuevoContadorState extends State<NuevoContador> {
             margin: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                const Text(
+                Text(
                   'Crear nuevo contador',
-                  style: TextStyle(fontSize: 22, color: Colors.blue),
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Temas().getTextColor(),
+                  ),
                 ),
                 const SizedBox(height: 40.0),
                 Image.network(
@@ -46,6 +51,7 @@ class _NuevoContadorState extends State<NuevoContador> {
                 const SizedBox(height: 5),
                 TextField(
                   decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Temas().getTextColor()),
                     suffixIcon: const Icon(
                       Icons.link_rounded,
                       color: Colors.purple,
@@ -73,11 +79,15 @@ class _NuevoContadorState extends State<NuevoContador> {
                   onPressed: () {
                     setImagen();
                   },
-                  child: const Text('cambiar imagen'),
+                  child: Text(
+                    'cambiar imagen',
+                    style: TextStyle(color: Temas().getTextColor()),
+                  ),
                 ),
                 const SizedBox(height: 40.0),
                 TextField(
                   decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Temas().getTextColor()),
                     suffixIcon: const Icon(
                       Icons.abc_rounded,
                       color: Colors.purple,
@@ -114,6 +124,7 @@ class _NuevoContadorState extends State<NuevoContador> {
                 const SizedBox(height: 40.0),
                 TextField(
                   decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Temas().getTextColor()),
                     suffixIcon: const Icon(
                       Icons.numbers_rounded,
                       color: Colors.purple,
@@ -149,7 +160,12 @@ class _NuevoContadorState extends State<NuevoContador> {
                   onPressed: () {
                     checkFields();
                   },
-                  child: const Text('Guardar'),
+                  child: Text(
+                    'Guardar',
+                    style: TextStyle(
+                      color: Temas().getTextColor(),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -179,6 +195,7 @@ class _NuevoContadorState extends State<NuevoContador> {
                       const SizedBox(height: 5),
                       TextField(
                         decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Temas().getTextColor()),
                           suffixIcon: const Icon(
                             Icons.link_rounded,
                             color: Colors.purple,
@@ -206,7 +223,10 @@ class _NuevoContadorState extends State<NuevoContador> {
                         onPressed: () {
                           setImagen();
                         },
-                        child: const Text('cambiar imagen'),
+                        child: Text(
+                          'cambiar imagen',
+                          style: TextStyle(color: Temas().getTextColor()),
+                        ),
                       ),
                     ],
                   ),
@@ -224,6 +244,7 @@ class _NuevoContadorState extends State<NuevoContador> {
                     children: [
                       TextField(
                         decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Temas().getTextColor()),
                           suffixIcon: const Icon(
                             Icons.abc_rounded,
                             color: Colors.purple,
@@ -261,6 +282,7 @@ class _NuevoContadorState extends State<NuevoContador> {
                       const SizedBox(height: 20.0),
                       TextField(
                         decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Temas().getTextColor()),
                           suffixIcon: const Icon(
                             Icons.numbers_rounded,
                             color: Colors.purple,
@@ -299,7 +321,10 @@ class _NuevoContadorState extends State<NuevoContador> {
                         onPressed: () {
                           checkFields();
                         },
-                        child: const Text('Guardar'),
+                        child: Text(
+                          'Guardar',
+                          style: TextStyle(color: Temas().getTextColor()),
+                        ),
                       ),
                     ],
                   ),

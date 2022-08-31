@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
 
+import 'model/temas.dart';
+
 class ItemViewer extends StatefulWidget {
   const ItemViewer({Key? key}) : super(key: key);
 
@@ -19,7 +21,7 @@ class _ItemViewerState extends State<ItemViewer> {
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
-        title: Text(c.nombre!),
+        title: Text(c.nombre!, style: TextStyle(color: Temas().getTextColor())),
       ),
       body: Container(
         margin: const EdgeInsets.all(20),
@@ -47,7 +49,8 @@ class _ItemViewerState extends State<ItemViewer> {
                     const SizedBox(height: 20),
                     Text(
                       c.contador.toString(),
-                      style: const TextStyle(fontSize: 45),
+                      style: TextStyle(
+                          color: Temas().getTextColor(), fontSize: 45),
                     ),
                   ],
                 ),
@@ -63,7 +66,8 @@ class _ItemViewerState extends State<ItemViewer> {
                           color: Colors.purple,
                         ),
                         labelText: 'Contador',
-                        labelStyle: const TextStyle(fontSize: 25),
+                        labelStyle: TextStyle(
+                            color: Temas().getTextColor(), fontSize: 25),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16.0),
                           borderSide: BorderSide(
@@ -132,7 +136,8 @@ class _ItemViewerState extends State<ItemViewer> {
                   const SizedBox(height: 20),
                   Text(
                     c.contador.toString(),
-                    style: const TextStyle(fontSize: 45),
+                    style:
+                        TextStyle(color: Temas().getTextColor(), fontSize: 45),
                   ),
                   TextField(
                     decoration: InputDecoration(
@@ -141,7 +146,8 @@ class _ItemViewerState extends State<ItemViewer> {
                         color: Colors.purple,
                       ),
                       labelText: 'Contador',
-                      labelStyle: const TextStyle(fontSize: 25),
+                      labelStyle: TextStyle(
+                          color: Temas().getTextColor(), fontSize: 25),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.0),
                         borderSide: BorderSide(
@@ -190,9 +196,14 @@ class _ItemViewerState extends State<ItemViewer> {
                   const SizedBox(height: 20),
                   TextButton(
                     onPressed: cambiarInfo,
-                    child: Text(c.informacion != ''
-                        ? c.informacion!
-                        : 'Toca para estalecer informacion del contador'),
+                    child: Text(
+                      c.informacion != ''
+                          ? c.informacion!
+                          : 'Toca para estalecer informacion del contador',
+                      style: TextStyle(
+                        color: Temas().getTextColor(),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -256,6 +267,9 @@ class _ItemViewerState extends State<ItemViewer> {
                   Expanded(
                     flex: 9,
                     child: TextFormField(
+                      style: TextStyle(
+                        color: Temas().getTextColor(),
+                      ),
                       onChanged: (valor) => texto = valor,
                       initialValue: c.informacion,
                       maxLines: null,
@@ -270,7 +284,10 @@ class _ItemViewerState extends State<ItemViewer> {
                           });
                           Navigator.pop(context);
                         },
-                        child: const Text('guardar')),
+                        child: Text(
+                          'guardar',
+                          style: TextStyle(color: Temas().getTextColor()),
+                        )),
                   )
                 ],
               ),
