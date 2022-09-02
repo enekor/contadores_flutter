@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 
 class Temas {
@@ -17,7 +18,7 @@ class Temas {
     } else if (actual.value == 2) {
       return TemaOscuro().primario;
     } else {
-      return TemaCustom().primario;
+      return TemaCustom().primario.value;
     }
   }
 
@@ -27,7 +28,7 @@ class Temas {
     } else if (actual.value == 2) {
       return TemaOscuro().secundario;
     } else {
-      return TemaCustom().secundario;
+      return TemaCustom().secundario.value;
     }
   }
 
@@ -37,7 +38,7 @@ class Temas {
     } else if (actual.value == 2) {
       return TemaOscuro().fondo;
     } else {
-      return TemaCustom().fondo;
+      return TemaCustom().fondo.value;
     }
   }
 
@@ -47,7 +48,17 @@ class Temas {
     } else if (actual.value == 2) {
       return TemaOscuro().texto;
     } else {
-      return TemaCustom().texto;
+      return TemaCustom().texto.value;
+    }
+  }
+
+  Color getButtonTextColor() {
+    if (actual.value == 1) {
+      return TemaClaro().buttonTextColor;
+    } else if (actual.value == 2) {
+      return TemaOscuro().buttonTextColor;
+    } else {
+      return TemaCustom().buttonTextColor.value;
     }
   }
 }
@@ -59,6 +70,7 @@ class TemaClaro {
   Color secundario = const Color.fromARGB(255, 222, 155, 227);
   Color fondo = Colors.white;
   Color texto = Colors.black54;
+  Color buttonTextColor = Colors.white;
 
   factory TemaClaro() {
     return _temaClaroInstance;
@@ -74,6 +86,7 @@ class TemaOscuro {
   Color secundario = const Color.fromARGB(255, 232, 129, 238);
   Color fondo = const Color.fromARGB(255, 0, 0, 24);
   Color texto = Colors.white60;
+  Color buttonTextColor = Colors.black;
 
   factory TemaOscuro() {
     return _temaOscuroInstance;
@@ -85,14 +98,77 @@ class TemaOscuro {
 class TemaCustom {
   static final TemaCustom _temaCustomInstance = TemaCustom._internal();
 
-  MaterialColor primario = Colors.green;
-  Color secundario = const Color.fromARGB(250, 51, 228, 255);
-  Color fondo = const Color.fromARGB(255, 255, 255, 255);
-  Color texto = Colors.red.shade400;
+  Rx<MaterialColor> primario = Colors.green.obs;
+  Rx<Color> secundario = const Color.fromARGB(250, 51, 228, 255).obs;
+  Rx<Color> fondo = const Color.fromARGB(255, 255, 255, 255).obs;
+  Rx<Color> texto = Colors.red.shade400.obs;
+  Rx<Color> buttonTextColor = Colors.white.obs;
 
   factory TemaCustom() {
     return _temaCustomInstance;
   }
 
   TemaCustom._internal();
+
+  Widget changeColors(BuildContext context) => Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Obx(
+              () => ElevatedButton(
+                onPressed: () => openDialog(
+                    chooseColor(
+                        (color) => TemaCustom().secundario.value = color,
+                        'Color secundario',
+                        TemaCustom().secundario.value),
+                    context),
+                child: Text(
+                  'Color secundario',
+                  style: TextStyle(color: TemaCustom().secundario.value),
+                ),
+              ),
+            ),
+            Obx(
+              () => ElevatedButton(
+                onPressed: () => openDialog(
+                    chooseColor((color) => TemaCustom().texto.value = color,
+                        'Color de texto', TemaCustom().texto.value),
+                    context),
+                child: Text('Color de texto',
+                    style: TextStyle(color: TemaCustom().texto.value)),
+              ),
+            ),
+            Obx(
+              () => ElevatedButton(
+                onPressed: () => openDialog(
+                    chooseColor(
+                        (color) => TemaCustom().buttonTextColor.value = color,
+                        'Color de texto de botones',
+                        TemaCustom().buttonTextColor.value),
+                    context),
+                child: Text('Texto de los botones',
+                    style:
+                        TextStyle(color: TemaCustom().buttonTextColor.value)),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget chooseColor(onClick, String texto, Color color) => Column(
+        children: [
+          Text(texto),
+          ColorPicker(pickerColor: color, onColorChanged: onClick)
+        ],
+      );
+
+  openDialog(Widget colorChooser, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(''),
+        content: colorChooser,
+      ),
+    );
+  }
 }

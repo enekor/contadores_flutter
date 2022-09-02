@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/adquirir_desde_api.dart';
 import 'package:untitled/model/listado.dart';
+import 'package:untitled/model/snackers.dart';
 import 'package:untitled/model/temas.dart';
 import 'package:untitled/nuevo_contador.dart';
 import 'package:untitled/ver_contadores.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'model/contador.dart';
 
@@ -36,6 +41,12 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+  @override
+  void initState() {
+    super.initState();
+    loadCounters();
+  }
+
   int pagina = 0;
   var paginas = [
     const VerContadores().VerContadoresConstructor(Listado().contadores),
@@ -59,12 +70,20 @@ class _RootPageState extends State<RootPage> {
                 color: Temas().getSecondary(),
               ),
             ),
+            IconButton(
+              onPressed: printJson,
+              icon: const Icon(Icons.abc),
+            ),
+            IconButton(
+                onPressed: saveCounters,
+                icon: const Icon(Icons.file_upload_rounded))
           ],
         ),
         bottomNavigationBar: NavigationBar(
           backgroundColor: Temas().getBackground(),
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           elevation: 200,
+          height: 60,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home, color: Colors.blueGrey),
@@ -124,37 +143,44 @@ class _RootPageState extends State<RootPage> {
       context: context,
       builder: (BuildContext context) {
         return Obx(
-          () => Container(
-            color: Temas().getBackground(),
-            child: SizedBox(
-              height: 400,
-              child: Container(
-                margin: const EdgeInsets.all(20),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: chip(Temas().actual.value == 1, 'Claro', 1),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: chip(Temas().actual.value == 2, 'Oscuro', 2),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: chip(Temas().actual.value == 3, 'Custom', 3),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        child: Temas().actual.value == 3
-                            ? const SizedBox(height: 3)
-                            : colorChooser(),
-                      )
-                    ],
+          () => SingleChildScrollView(
+            child: Container(
+              color: Temas().getBackground(),
+              child: SizedBox(
+                height: 100,
+                child: Container(
+                  margin: const EdgeInsets.all(20),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child:
+                                  chip(Temas().actual.value == 1, 'Claro', 1),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child:
+                                  chip(Temas().actual.value == 2, 'Oscuro', 2),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child:
+                                  chip(Temas().actual.value == 3, 'Custom', 3),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          child: Temas().actual.value == 3
+                              ? TemaCustom().changeColors(context)
+                              : const SizedBox(
+                                  height: 5,
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -165,5 +191,34 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  Widget colorChooser() => Container(color: Colors.orange);
+  Future<File> _localFile() async {
+    var dir = await getApplicationDocumentsDirectory();
+    return File('${dir.path}/counters.json');
+  }
+
+  loadCounters() async {
+    final file = await _localFile();
+
+    String json = await file.readAsString();
+    setState(() {
+      Listado().contadores =
+          ListadoFromJson.fromJson(jsonDecode(json)).contadores;
+    });
+  }
+
+  saveCounters() async {
+    final file = await _localFile();
+
+    await file.writeAsString(jsonEncode(Listado().toJson()));
+    showSnack(Snacker().simpleSnack(
+        'Guardado', Colors.purple.shade400, const Icon(Icons.upload)));
+  }
+
+  printJson() {
+    debugPrint(jsonEncode(Listado().toJson()));
+  }
+
+  showSnack(SnackBar snack) {
+    ScaffoldMessenger.of(context).showSnackBar(snack);
+  }
 }

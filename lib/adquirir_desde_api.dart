@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled/model/listado.dart';
 import 'package:untitled/model/snackers.dart';
@@ -20,38 +21,43 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: loadItems,
-                  icon: const Icon(Icons.download_rounded),
-                  hoverColor: const Color.fromARGB(0, 76, 175, 79),
-                ),
-                TextButton(
-                  onPressed: loadItems,
-                  child: Text(
-                    'Cargar desde la api',
-                    style: TextStyle(
+    return Obx(
+      () => Center(
+        child: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: loadItems,
+                    icon: Icon(
+                      Icons.download_rounded,
                       color: Temas().getTextColor(),
                     ),
+                    hoverColor: const Color.fromARGB(0, 76, 175, 79),
                   ),
-                ),
-              ],
+                  TextButton(
+                    onPressed: loadItems,
+                    child: Text(
+                      'Cargar desde la api',
+                      style: TextStyle(
+                        color: Temas().getTextColor(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            flex: 9,
-            child: Center(
-              child: lista(),
+            Expanded(
+              flex: 9,
+              child: Center(
+                child: lista(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -109,72 +115,74 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
   }
 
   Widget item(Contador c) {
-    return Center(
-      child: Card(
-        color: const Color.fromARGB(112, 180, 194, 201),
-        borderOnForeground: true,
-        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        elevation: 10,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 7,
-              child: Container(
-                margin: const EdgeInsets.only(left: 35),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.network(c.imagen!, width: 70, height: 70),
-                    Container(
-                      margin: const EdgeInsets.only(left: 25),
-                      child: Column(
-                        children: [
-                          Text(
-                            c.nombre!,
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: Temas().getTextColor(),
+    return Obx(
+      () => Center(
+        child: Card(
+          color: const Color.fromARGB(112, 180, 194, 201),
+          borderOnForeground: true,
+          margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          elevation: 10,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 7,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 35),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.network(c.imagen!, width: 70, height: 70),
+                      Container(
+                        margin: const EdgeInsets.only(left: 25),
+                        child: Column(
+                          children: [
+                            Text(
+                              c.nombre!,
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Temas().getTextColor(),
+                              ),
                             ),
-                          ),
-                          Text(
-                            c.contador!.toString(),
-                            style: TextStyle(
-                                color: Temas().getTextColor(), fontSize: 20),
-                          ),
-                        ],
+                            Text(
+                              c.contador!.toString(),
+                              style: TextStyle(
+                                  color: Temas().getTextColor(), fontSize: 20),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Center(
-                child: Column(
-                  children: [
-                    IconButton(
-                      onPressed: () => deleteContador(c),
-                      icon: const Icon(
-                        Icons.delete_rounded,
-                        color: Colors.redAccent,
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: Column(
+                    children: [
+                      IconButton(
+                        onPressed: () => deleteContador(c),
+                        icon: const Icon(
+                          Icons.delete_rounded,
+                          color: Colors.redAccent,
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () => addItemToList(c),
-                      icon: const Icon(
-                        Icons.add_task_rounded,
-                        color: Colors.blueGrey,
+                      IconButton(
+                        onPressed: () => addItemToList(c),
+                        icon: const Icon(
+                          Icons.add_task_rounded,
+                          color: Colors.blueGrey,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

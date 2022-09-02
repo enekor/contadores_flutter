@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
 import 'package:untitled/model/snackers.dart';
@@ -29,308 +30,328 @@ class _NuevoContadorState extends State<NuevoContador> {
         : horizontalView();
   }
 
-  Widget vertivalView() => SingleChildScrollView(
-        child: Center(
-          child: Container(
-            margin: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                Text(
-                  'Crear nuevo contador',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Temas().getTextColor(),
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-                Image.network(
-                  imagen,
-                  height: 300,
-                  width: 300,
-                ),
-                const SizedBox(height: 5),
-                TextField(
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Temas().getTextColor()),
-                    suffixIcon: const Icon(
-                      Icons.link_rounded,
-                      color: Colors.purple,
-                    ),
-                    labelText: 'URL (.png | .jpg | .jpeg)',
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      borderSide: BorderSide(
-                        color: imagenSeleciconada == 'error'
-                            ? Colors.red
-                            : Colors.purple,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: imagenSeleciconada == 'error'
-                              ? Colors.red
-                              : Colors.purple),
-                    ),
-                  ),
-                  onChanged: (valor) =>
-                      setState(() => imagenSeleciconada = valor),
-                ),
-                OutlinedButton(
-                  onPressed: () {
-                    setImagen();
-                  },
-                  child: Text(
-                    'cambiar imagen',
-                    style: TextStyle(color: Temas().getTextColor()),
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-                TextField(
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Temas().getTextColor()),
-                    suffixIcon: const Icon(
-                      Icons.abc_rounded,
-                      color: Colors.purple,
-                    ),
-                    labelText: 'Nombre (max 20)',
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      borderSide: BorderSide(
-                        color:
-                            nombreFallido == true ? Colors.red : Colors.purple,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: nombreFallido == true
-                              ? Colors.red
-                              : Colors.purple),
-                    ),
-                  ),
-                  onChanged: (valor) => setState(() {
-                    if (valor.length <= 20) {
-                      setState(() {
-                        nombre = valor;
-                        nombreFallido = false;
-                      });
-                    } else {
-                      setState(() {
-                        nombre = valor;
-                        nombreFallido = true;
-                      });
-                    }
-                  }),
-                ),
-                const SizedBox(height: 40.0),
-                TextField(
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Temas().getTextColor()),
-                    suffixIcon: const Icon(
-                      Icons.numbers_rounded,
-                      color: Colors.purple,
-                    ),
-                    labelText: 'Contador inicial',
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      borderSide: BorderSide(
-                        color: fallido == true ? Colors.red : Colors.purple,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: fallido == true ? Colors.red : Colors.purple),
-                    ),
-                  ),
-                  onChanged: (valor) => setState(
-                    () {
-                      setState(
-                        () {
-                          if (valor == "") {
-                            contador_inicial = '0';
-                          } else {
-                            contador_inicial = valor;
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-                OutlinedButton(
-                  onPressed: () {
-                    checkFields();
-                  },
-                  child: Text(
-                    'Guardar',
+  Widget vertivalView() => Obx(
+        () => SingleChildScrollView(
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Crear nuevo contador',
                     style: TextStyle(
+                      fontSize: 22,
                       color: Temas().getTextColor(),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 40.0),
+                  Image.network(
+                    imagen,
+                    height: 300,
+                    width: 300,
+                  ),
+                  const SizedBox(height: 5),
+                  TextField(
+                    style: TextStyle(color: Temas().getTextColor()),
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(color: Temas().getTextColor()),
+                      suffixIcon: const Icon(
+                        Icons.link_rounded,
+                        color: Colors.purple,
+                      ),
+                      labelText: 'URL (.png | .jpg | .jpeg)',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: BorderSide(
+                          color: imagenSeleciconada == 'error'
+                              ? Colors.red
+                              : Colors.purple,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: imagenSeleciconada == 'error'
+                                ? Colors.red
+                                : Colors.purple),
+                      ),
+                    ),
+                    onChanged: (valor) =>
+                        setState(() => imagenSeleciconada = valor),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      setImagen();
+                    },
+                    child: Text(
+                      'cambiar imagen',
+                      style: TextStyle(color: Temas().getButtonTextColor()),
+                    ),
+                  ),
+                  const SizedBox(height: 40.0),
+                  TextField(
+                    style: TextStyle(color: Temas().getTextColor()),
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(color: Temas().getTextColor()),
+                      suffixIcon: const Icon(
+                        Icons.abc_rounded,
+                        color: Colors.purple,
+                      ),
+                      labelText: 'Nombre (max 20)',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: BorderSide(
+                          color: nombreFallido == true
+                              ? Colors.red
+                              : Colors.purple,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: nombreFallido == true
+                                ? Colors.red
+                                : Colors.purple),
+                      ),
+                    ),
+                    onChanged: (valor) => setState(() {
+                      if (valor.length <= 20) {
+                        setState(() {
+                          nombre = valor;
+                          nombreFallido = false;
+                        });
+                      } else {
+                        setState(() {
+                          nombre = valor;
+                          nombreFallido = true;
+                        });
+                      }
+                    }),
+                  ),
+                  const SizedBox(height: 40.0),
+                  TextField(
+                    style: TextStyle(color: Temas().getTextColor()),
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(color: Temas().getTextColor()),
+                      suffixIcon: const Icon(
+                        Icons.numbers_rounded,
+                        color: Colors.purple,
+                      ),
+                      labelText: 'Contador inicial',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: BorderSide(
+                          color: fallido == true ? Colors.red : Colors.purple,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color:
+                                fallido == true ? Colors.red : Colors.purple),
+                      ),
+                    ),
+                    onChanged: (valor) => setState(
+                      () {
+                        setState(
+                          () {
+                            if (valor == "") {
+                              contador_inicial = '0';
+                            } else {
+                              contador_inicial = valor;
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 40.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      checkFields();
+                    },
+                    child: Text(
+                      'Guardar',
+                      style: TextStyle(
+                        color: Temas().getButtonTextColor(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       );
 
-  Widget horizontalView() => Center(
-        child: SingleChildScrollView(
-          child: Row(
-            children: [
-              Expanded(
-                flex: 5,
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: Column(
-                    children: [
-                      Image.network(
-                        imagen,
-                        height: 130,
-                        width: 130,
-                      ),
-                      const SizedBox(height: 5),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Temas().getTextColor()),
-                          suffixIcon: const Icon(
-                            Icons.link_rounded,
-                            color: Colors.purple,
-                          ),
-                          labelText: 'URL (.png | .jpg | .jpeg)',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                            borderSide: BorderSide(
-                              color: imagenSeleciconada == 'error'
-                                  ? Colors.red
-                                  : Colors.purple,
+  Widget horizontalView() => Obx(
+        () => Center(
+          child: SingleChildScrollView(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      right: 20,
+                      left: 20,
+                    ),
+                    child: Column(
+                      children: [
+                        Image.network(
+                          imagen,
+                          height: 130,
+                          width: 130,
+                        ),
+                        const SizedBox(height: 5),
+                        TextField(
+                          style: TextStyle(color: Temas().getTextColor()),
+                          decoration: InputDecoration(
+                            labelStyle:
+                                TextStyle(color: Temas().getTextColor()),
+                            suffixIcon: const Icon(
+                              Icons.link_rounded,
+                              color: Colors.purple,
                             ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            labelText: 'URL (.png | .jpg | .jpeg)',
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                              borderSide: BorderSide(
                                 color: imagenSeleciconada == 'error'
                                     ? Colors.red
-                                    : Colors.purple),
-                          ),
-                        ),
-                        onChanged: (valor) =>
-                            setState(() => imagenSeleciconada = valor),
-                      ),
-                      OutlinedButton(
-                        onPressed: () {
-                          setImagen();
-                        },
-                        child: Text(
-                          'cambiar imagen',
-                          style: TextStyle(color: Temas().getTextColor()),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 5,
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: Column(
-                    children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Temas().getTextColor()),
-                          suffixIcon: const Icon(
-                            Icons.abc_rounded,
-                            color: Colors.purple,
-                          ),
-                          labelText: 'Nombre (max 20)',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                            borderSide: BorderSide(
-                              color: nombreFallido == true
-                                  ? Colors.red
-                                  : Colors.purple,
+                                    : Colors.purple,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: imagenSeleciconada == 'error'
+                                      ? Colors.red
+                                      : Colors.purple),
                             ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                          onChanged: (valor) =>
+                              setState(() => imagenSeleciconada = valor),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {
+                            setImagen();
+                          },
+                          child: Text(
+                            'cambiar imagen',
+                            style:
+                                TextStyle(color: Temas().getButtonTextColor()),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      right: 20,
+                      left: 20,
+                    ),
+                    child: Column(
+                      children: [
+                        TextField(
+                          style: TextStyle(color: Temas().getTextColor()),
+                          decoration: InputDecoration(
+                            labelStyle:
+                                TextStyle(color: Temas().getTextColor()),
+                            suffixIcon: const Icon(
+                              Icons.abc_rounded,
+                              color: Colors.purple,
+                            ),
+                            labelText: 'Nombre (max 20)',
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                              borderSide: BorderSide(
                                 color: nombreFallido == true
                                     ? Colors.red
-                                    : Colors.purple),
-                          ),
-                        ),
-                        onChanged: (valor) => setState(() {
-                          if (valor.length <= 20) {
-                            setState(() {
-                              nombreFallido = false;
-                              nombre = valor;
-                            });
-                          } else {
-                            setState(() {
-                              nombre = valor;
-                              nombreFallido = true;
-                            });
-                          }
-                        }),
-                      ),
-                      const SizedBox(height: 20.0),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Temas().getTextColor()),
-                          suffixIcon: const Icon(
-                            Icons.numbers_rounded,
-                            color: Colors.purple,
-                          ),
-                          labelText: 'Contador inicial',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                            borderSide: BorderSide(
-                              color:
-                                  fallido == true ? Colors.red : Colors.purple,
+                                    : Colors.purple,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: nombreFallido == true
+                                      ? Colors.red
+                                      : Colors.purple),
                             ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                          onChanged: (valor) => setState(() {
+                            if (valor.length <= 20) {
+                              setState(() {
+                                nombreFallido = false;
+                                nombre = valor;
+                              });
+                            } else {
+                              setState(() {
+                                nombre = valor;
+                                nombreFallido = true;
+                              });
+                            }
+                          }),
+                        ),
+                        const SizedBox(height: 20.0),
+                        TextField(
+                          style: TextStyle(color: Temas().getTextColor()),
+                          decoration: InputDecoration(
+                            labelStyle:
+                                TextStyle(color: Temas().getTextColor()),
+                            suffixIcon: const Icon(
+                              Icons.numbers_rounded,
+                              color: Colors.purple,
+                            ),
+                            labelText: 'Contador inicial',
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                              borderSide: BorderSide(
                                 color: fallido == true
                                     ? Colors.red
-                                    : Colors.purple),
+                                    : Colors.purple,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: fallido == true
+                                      ? Colors.red
+                                      : Colors.purple),
+                            ),
+                          ),
+                          onChanged: (valor) => setState(
+                            () {
+                              setState(
+                                () {
+                                  if (valor == "") {
+                                    contador_inicial = '0';
+                                  } else {
+                                    contador_inicial = valor;
+                                  }
+                                },
+                              );
+                            },
                           ),
                         ),
-                        onChanged: (valor) => setState(
-                          () {
-                            setState(
-                              () {
-                                if (valor == "") {
-                                  contador_inicial = '0';
-                                } else {
-                                  contador_inicial = valor;
-                                }
-                              },
-                            );
+                        const SizedBox(height: 10.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            checkFields();
                           },
+                          child: Text(
+                            'Guardar',
+                            style:
+                                TextStyle(color: Temas().getButtonTextColor()),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0),
-                      OutlinedButton(
-                        onPressed: () {
-                          checkFields();
-                        },
-                        child: Text(
-                          'Guardar',
-                          style: TextStyle(color: Temas().getTextColor()),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

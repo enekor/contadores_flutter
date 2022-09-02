@@ -70,117 +70,119 @@ class _VerContadoresState extends State<VerContadores> {
       );
 
   Widget cardItem(int index, Orientation o) {
-    return GestureDetector(
-      onTap: () {
-        openItemView(index);
-      },
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
-                child: Image.network(
-                  Listado().contadores[index].imagen!,
-                  height: 100,
-                  width: 100,
+    return Obx(
+      () => GestureDetector(
+        onTap: () {
+          openItemView(index);
+        },
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
+                  child: Image.network(
+                    Listado().contadores[index].imagen!,
+                    height: 100,
+                    width: 100,
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                margin: EdgeInsets.only(
-                    top: Listado().contadores[index].nombre!.length > 10
-                        ? 20
-                        : 5),
-                child: Column(
-                  children: [
-                    Text(
-                      Listado().contadores[index].nombre!,
-                      style: TextStyle(
-                          color: Temas().getTextColor(),
-                          fontSize:
-                              Listado().contadores[index].nombre!.length > 10
-                                  ? 15
-                                  : 30),
-                    ),
-                    Text(
-                      Listado().contadores[index].contador.toString(),
-                      style: TextStyle(
-                          color: Temas().getTextColor(), fontSize: 20),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            editarContador(
-                                false, Listado().contadores[index], index);
-                          },
-                          icon: const Icon(
-                            Icons.remove_circle,
-                            color: Colors.red,
-                          ),
-                          iconSize: 40,
-                          hoverColor: const Color.fromARGB(0, 76, 175, 79),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            editarContador(
-                                true, Listado().contadores[index], index);
-                          },
-                          icon: const Icon(
-                            Icons.add_circle,
-                            color: Colors.green,
-                          ),
-                          iconSize: 40,
-                          hoverColor: const Color.fromARGB(0, 76, 175, 79),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(
-                    right: 15, top: o == Orientation.landscape ? 30 : 0),
-                child: Column(
-                  children: [
-                    IconButton(
-                      onPressed: () => ScaffoldMessenger.of(context)
-                          .showSnackBar(Snacker().confirmSnack(
-                              Listado().contadores[index],
-                              context,
-                              borrarItem)),
-                      icon: const Icon(
-                        Icons.recycling_rounded,
-                        color: Colors.deepOrange,
+              Expanded(
+                flex: 6,
+                child: Container(
+                  margin: EdgeInsets.only(
+                      top: Listado().contadores[index].nombre!.length > 10
+                          ? 20
+                          : 5),
+                  child: Column(
+                    children: [
+                      Text(
+                        Listado().contadores[index].nombre!,
+                        style: TextStyle(
+                            color: Temas().getTextColor(),
+                            fontSize:
+                                Listado().contadores[index].nombre!.length > 10
+                                    ? 15
+                                    : 30),
                       ),
-                      iconSize: 30,
-                      hoverColor: const Color.fromARGB(0, 76, 175, 79),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        uploadItem(Listado().contadores[index], index);
-                      },
-                      icon: const Icon(
-                        Icons.upload_rounded,
-                        color: Colors.deepOrange,
+                      Text(
+                        Listado().contadores[index].contador.toString(),
+                        style: TextStyle(
+                            color: Temas().getTextColor(), fontSize: 20),
                       ),
-                      iconSize: 30,
-                      hoverColor: const Color.fromARGB(0, 76, 175, 79),
-                    ),
-                  ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              editarContador(
+                                  false, Listado().contadores[index], index);
+                            },
+                            icon: const Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
+                            iconSize: 40,
+                            hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              editarContador(
+                                  true, Listado().contadores[index], index);
+                            },
+                            icon: const Icon(
+                              Icons.add_circle,
+                              color: Colors.green,
+                            ),
+                            iconSize: 40,
+                            hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: EdgeInsets.only(
+                      right: 15, top: o == Orientation.landscape ? 30 : 0),
+                  child: Column(
+                    children: [
+                      IconButton(
+                        onPressed: () => ScaffoldMessenger.of(context)
+                            .showSnackBar(Snacker().confirmSnack(
+                                Listado().contadores[index],
+                                context,
+                                borrarItem)),
+                        icon: const Icon(
+                          Icons.recycling_rounded,
+                          color: Colors.deepOrange,
+                        ),
+                        iconSize: 30,
+                        hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          uploadItem(Listado().contadores[index], index);
+                        },
+                        icon: const Icon(
+                          Icons.cloud_upload,
+                          color: Colors.deepOrange,
+                        ),
+                        iconSize: 30,
+                        hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

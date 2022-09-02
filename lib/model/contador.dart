@@ -108,7 +108,7 @@ class Contador {
   Contador.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nombre = json['nombre'];
-    contador = int.parse(json['contador']);
+    contador = json['contador'];
     imagen = json['imagen'];
     informacion = json['informacion'];
     activo = json['activo'].toString().toLowerCase() == 'true';
