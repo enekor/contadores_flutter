@@ -154,7 +154,7 @@ class _RootPageState extends State<RootPage> {
             child: Container(
               color: Temas().getBackground(),
               child: SizedBox(
-                height: 100,
+                height: 150,
                 child: Container(
                   margin: const EdgeInsets.all(20),
                   child: Center(

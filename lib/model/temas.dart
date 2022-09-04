@@ -123,7 +123,7 @@ class TemaCustom {
                         TemaCustom().secundario.value),
                     context),
                 child: Text(
-                  'Color secundario',
+                  'Secundario',
                   style: TextStyle(color: TemaCustom().secundario.value),
                 ),
               ),
@@ -134,7 +134,7 @@ class TemaCustom {
                     chooseColor((color) => TemaCustom().texto.value = color,
                         'Color de texto', TemaCustom().texto.value),
                     context),
-                child: Text('Color de texto',
+                child: Text('Texto',
                     style: TextStyle(color: TemaCustom().texto.value)),
               ),
             ),
@@ -146,7 +146,7 @@ class TemaCustom {
                         'Color de texto de botones',
                         TemaCustom().buttonTextColor.value),
                     context),
-                child: Text('Texto de los botones',
+                child: Text('Botones',
                     style:
                         TextStyle(color: TemaCustom().buttonTextColor.value)),
               ),

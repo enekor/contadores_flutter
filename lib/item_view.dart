@@ -22,11 +22,13 @@ class _ItemViewerState extends State<ItemViewer> {
     Orientation orientation = MediaQuery.of(context).orientation;
     return Obx(
       () => Scaffold(
+        backgroundColor: Temas().getBackground(),
         appBar: AppBar(
           title:
               Text(c.nombre!, style: TextStyle(color: Temas().getTextColor())),
         ),
         body: Container(
+          color: Temas().getBackground(),
           margin: const EdgeInsets.all(20),
           child: screenLayout(orientation),
         ),
@@ -265,9 +267,11 @@ class _ItemViewerState extends State<ItemViewer> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
+        return Container(color: Temas().getBackground(),child: SizedBox(
+
           height: 400,
           child: Container(
+            color: Temas().getBackground(),
             margin: const EdgeInsets.all(20),
             child: Center(
               child: Column(
@@ -275,6 +279,15 @@ class _ItemViewerState extends State<ItemViewer> {
                   Expanded(
                     flex: 9,
                     child: TextFormField(
+                      decoration: InputDecoration(
+
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Temas().getPrimary()),
+                        ),
+                        focusedBorder:  UnderlineInputBorder(
+                          borderSide: BorderSide(color: Temas().getPrimary()),
+                        ),
+                      ),
                       style: TextStyle(
                         color: Temas().getTextColor(),
                       ),
@@ -301,7 +314,7 @@ class _ItemViewerState extends State<ItemViewer> {
               ),
             ),
           ),
-        );
+        ),);
       },
     );
   }
