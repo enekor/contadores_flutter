@@ -28,7 +28,7 @@ class ListadoFromJson {
     if (json['contadores'] != null) {
       contadores = <Contador>[];
       json['contadores'].forEach((v) {
-        contadores.add(new Contador.fromJson(v));
+        contadores.add(Contador.fromJson(v));
       });
     }
   }

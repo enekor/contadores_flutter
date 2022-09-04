@@ -108,20 +108,20 @@ class Contador {
   Contador.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nombre = json['nombre'];
-    contador = json['contador'];
+    contador = int.parse(json['contador']);
     imagen = json['imagen'];
     informacion = json['informacion'];
     activo = json['activo'].toString().toLowerCase() == 'true';
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['nombre'] = this.nombre;
-    data['contador'] = this.contador;
-    data['imagen'] = this.imagen;
-    data['informacion'] = this.informacion;
-    data['activo'] = this.activo;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['nombre'] = nombre;
+    data['contador'] = contador!.toString();
+    data['imagen'] = imagen;
+    data['informacion'] = informacion;
+    data['activo'] = activo;
     return data;
   }
 }

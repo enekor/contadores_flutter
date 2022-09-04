@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/adquirir_desde_api.dart';
+import 'package:untitled/model/contador.dart';
 import 'package:untitled/model/listado.dart';
 import 'package:untitled/model/snackers.dart';
 import 'package:untitled/model/temas.dart';
@@ -11,8 +11,6 @@ import 'package:untitled/nuevo_contador.dart';
 import 'package:untitled/ver_contadores.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'model/contador.dart';
 
 void main(List<String> args) {
   runApp(const MyApp());
@@ -41,10 +39,15 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+  late final Future<int> _loading;
+
   @override
   void initState() {
     super.initState();
     loadCounters();
+    cargarTema();
+
+    _loading = Future.delayed(const Duration(seconds: 1)).then((_) => 1);
   }
 
   int pagina = 0;
@@ -56,66 +59,70 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        backgroundColor: Temas().getBackground(),
-        appBar: AppBar(
-          title: Text(
-              'Contadores actuales ${Listado().contadores.length.toString()}'),
-          actions: [
-            IconButton(
-              onPressed: changeTheme,
-              icon: Icon(
-                Icons.brush_rounded,
-                color: Temas().getSecondary(),
+    return FutureBuilder(
+      future: _loading,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Obx(
+            () => Scaffold(
+              backgroundColor: Temas().getBackground(),
+              appBar: AppBar(
+                title: Text(
+                    'Contadores actuales ${Listado().contadores.length.toString()}'),
+                actions: [
+                  IconButton(
+                    onPressed: changeTheme,
+                    icon: Icon(
+                      Icons.brush_rounded,
+                      color: Temas().getSecondary(),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: printJson,
+                    icon: const Icon(Icons.abc),
+                  ),
+                  IconButton(
+                      onPressed: saveCounters,
+                      icon: const Icon(Icons.file_upload_rounded))
+                ],
               ),
+              bottomNavigationBar: NavigationBar(
+                backgroundColor: Temas().getBackground(),
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                elevation: 200,
+                height: 60,
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.home, color: Colors.blueGrey),
+                    label: 'Contadores',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.add, color: Colors.blueGrey),
+                    label: 'Nuevo contador',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.download_rounded, color: Colors.blueGrey),
+                    label: 'Descargar',
+                  ),
+                ],
+                onDestinationSelected: (int selected) =>
+                    setState(() => pagina = selected),
+                selectedIndex: pagina,
+              ),
+              body: paginas[pagina],
             ),
-            IconButton(
-              onPressed: printJson,
-              icon: const Icon(Icons.abc),
-            ),
-            IconButton(
-                onPressed: saveCounters,
-                icon: const Icon(Icons.file_upload_rounded))
-          ],
-        ),
-        bottomNavigationBar: NavigationBar(
-          backgroundColor: Temas().getBackground(),
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          elevation: 200,
-          height: 60,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home, color: Colors.blueGrey),
-              label: 'Contadores',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.add, color: Colors.blueGrey),
-              label: 'Nuevo contador',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.download_rounded, color: Colors.blueGrey),
-              label: 'Descargar',
-            ),
-          ],
-          onDestinationSelected: (int selected) =>
-              setState(() => pagina = selected),
-          selectedIndex: pagina,
-        ),
-        body: paginas[pagina],
-      ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
   changeTheme() async {
     final prefs = await SharedPreferences.getInstance();
-
-    try {
-      Temas().actual.value = prefs.getInt('temaActual')!;
-    } catch (e) {
-      prefs.setInt('temaActual', 1);
-      Temas().actual.value = 1;
-    }
 
     Widget chip(bool isSelected, String texto, int valor) {
       bool seleccionado = isSelected;
@@ -193,17 +200,16 @@ class _RootPageState extends State<RootPage> {
 
   Future<File> _localFile() async {
     var dir = await getApplicationDocumentsDirectory();
-    return File('${dir.path}/counters.json');
+    return File('${dir.path}/contadoresFlutter/counters.json')
+        .create(recursive: true);
   }
 
   loadCounters() async {
     final file = await _localFile();
 
     String json = await file.readAsString();
-    setState(() {
-      Listado().contadores =
-          ListadoFromJson.fromJson(jsonDecode(json)).contadores;
-    });
+    Listado().contadores =
+        ListadoFromJson.fromJson(jsonDecode(json)).contadores;
   }
 
   saveCounters() async {
@@ -220,5 +226,16 @@ class _RootPageState extends State<RootPage> {
 
   showSnack(SnackBar snack) {
     ScaffoldMessenger.of(context).showSnackBar(snack);
+  }
+
+  cargarTema() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    try {
+      Temas().actual.value = prefs.getInt('temaActual')!;
+    } catch (e) {
+      prefs.setInt('temaActual', 1);
+      Temas().actual.value = 1;
+    }
   }
 }

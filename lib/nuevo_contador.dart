@@ -374,7 +374,6 @@ class _NuevoContadorState extends State<NuevoContador> {
             fallido = false;
           },
         );
-        debugPrint('${c.nombre},${c.contador},${c.imagen}');
       } on FormatException {
         setState(
           () {

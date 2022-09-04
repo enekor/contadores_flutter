@@ -18,6 +18,8 @@ class AdquirirDesdeApi extends StatefulWidget {
 
 class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
   List<Contador> contadores = [];
+  bool borrados = false;
+  String apiCall = 'active';
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,12 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 15),
+                  IconButton(
+                      onPressed: changeItemType,
+                      icon: Icon(borrados == true
+                          ? Icons.delete_sweep_rounded
+                          : Icons.extension_sharp))
                 ],
               ),
             ),
@@ -65,9 +73,9 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
   loadItems() async {
     late var url;
     if (Platform.isAndroid) {
-      url = Uri.parse('http://192.168.1.138:7777/contadores/active');
+      url = Uri.parse('http://192.168.1.138:7777/contadores/$apiCall');
     } else {
-      url = Uri.parse('http://localhost:7777/contadores/active');
+      url = Uri.parse('http://localhost:7777/contadores/$apiCall');
     }
     try {
       var ans = await http.get(url);
@@ -109,83 +117,123 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
     return ListView.builder(
       itemCount: contadores.length,
       itemBuilder: (BuildContext context, int index) {
-        return item(contadores[index]);
+        return item(contadores[index], index);
       },
     );
   }
 
-  Widget item(Contador c) {
+  Widget item(Contador c, int index) => Obx(
+        () => Container(
+          margin: const EdgeInsets.only(bottom: 4, right: 10, left: 10),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: borderGenerator(index),
+            color: Temas().getSecondary(),
+          ),
+          child: cardItem(c),
+        ),
+      );
+
+  Widget cardItem(Contador c) {
     return Obx(
       () => Center(
-        child: Card(
-          color: const Color.fromARGB(112, 180, 194, 201),
-          borderOnForeground: true,
-          margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          elevation: 10,
-          child: Row(
-            children: [
-              Expanded(
-                flex: 7,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 35),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.network(c.imagen!, width: 70, height: 70),
-                      Container(
-                        margin: const EdgeInsets.only(left: 25),
-                        child: Column(
-                          children: [
-                            Text(
-                              c.nombre!,
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Temas().getTextColor(),
-                              ),
-                            ),
-                            Text(
-                              c.contador!.toString(),
-                              style: TextStyle(
-                                  color: Temas().getTextColor(), fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: const EdgeInsets.only(left: 15, top: 4, bottom: 4),
+                child: Image.network(
+                  c.imagen!,
+                  height: 100,
+                  width: 100,
                 ),
               ),
-              Expanded(
-                flex: 3,
-                child: Center(
-                  child: Column(
-                    children: [
-                      IconButton(
-                        onPressed: () => deleteContador(c),
-                        icon: const Icon(
-                          Icons.delete_rounded,
-                          color: Colors.redAccent,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => addItemToList(c),
-                        icon: const Icon(
-                          Icons.add_task_rounded,
-                          color: Colors.blueGrey,
-                        ),
-                      ),
-                    ],
-                  ),
+            ),
+            Expanded(
+              flex: 6,
+              child: Container(
+                margin: EdgeInsets.only(top: c.nombre!.length > 10 ? 20 : 5),
+                child: Column(
+                  children: [
+                    Text(
+                      c.nombre!,
+                      style: TextStyle(
+                          color: Temas().getTextColor(),
+                          fontSize: c.nombre!.length > 10 ? 15 : 30),
+                    ),
+                    Text(
+                      c.contador.toString(),
+                      style: TextStyle(
+                          color: Temas().getTextColor(), fontSize: 20),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  right: 15,
+                ),
+                child: c.activo == true
+                    ? Column(
+                        children: [
+                          IconButton(
+                            onPressed: () => deleteContador(c),
+                            icon: const Icon(
+                              Icons.recycling_rounded,
+                              color: Colors.deepOrange,
+                            ),
+                            iconSize: 30,
+                            hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                          ),
+                          IconButton(
+                            onPressed: () => addItemToList(c),
+                            icon: const Icon(
+                              Icons.playlist_add_check_rounded,
+                              color: Colors.deepOrange,
+                            ),
+                            iconSize: 30,
+                            hoverColor: const Color.fromARGB(0, 76, 175, 79),
+                          ),
+                        ],
+                      )
+                    : Center(
+                        child: IconButton(
+                            onPressed: () => restoreContador(c),
+                            icon: const Icon(Icons.restore_from_trash_rounded)),
+                      ),
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  BorderRadiusGeometry borderGenerator(int pos) {
+    if (contadores.length == 1) {
+      return BorderRadius.circular(25);
+    } else {
+      if (pos == 0) {
+        return const BorderRadius.only(
+            bottomLeft: Radius.circular(5),
+            bottomRight: Radius.circular(5),
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25));
+      } else if (pos == contadores.length - 1) {
+        return const BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
+            topLeft: Radius.circular(5),
+            topRight: Radius.circular(5));
+      } else {
+        return BorderRadius.circular(5);
+      }
+    }
   }
 
   showSnacker(SnackBar snacker) {
@@ -227,5 +275,49 @@ class _AdquirirDesdeApiState extends State<AdquirirDesdeApi> {
           Colors.red,
           const Icon(Icons.warning_amber_rounded)));
     }
+  }
+
+  void restoreContador(Contador c) async {
+    late var url;
+    if (Platform.isAndroid) {
+      url = Uri.parse('http://192.168.1.138:7777/contadores/restore/${c.id}');
+    } else {
+      url = Uri.parse("http://localhost:7777/contadores/restore/${c.id}");
+    }
+
+    var ans = await http.put(url);
+
+    if (ans.statusCode == 202) {
+      showSnacker(Snacker().simpleSnack(
+          'Restaurado con exito',
+          Colors.green.shade300,
+          const Icon(Icons.check_circle_outline_rounded)));
+    } else {
+      showSnacker(Snacker().simpleSnack(
+          'Hubo un problema al restaurar, pruebe mas tarde',
+          Colors.red.shade600,
+          const Icon(Icons.close_rounded)));
+    }
+
+    setState(() {
+      contadores.remove(c);
+    });
+  }
+
+  changeItemType() {
+    setState(() {
+      borrados = !borrados;
+      apiCall = borrados == true ? 'deleted' : 'active';
+    });
+
+    showSnacker(
+      Snacker().simpleSnack(
+        borrados == true ? 'Mostrando borrados' : 'Mostrando activos',
+        const Color.fromARGB(255, 231, 176, 241),
+        Icon(borrados == true
+            ? Icons.delete_sweep_rounded
+            : Icons.extension_sharp),
+      ),
+    );
   }
 }

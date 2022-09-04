@@ -231,8 +231,6 @@ class _VerContadoresState extends State<VerContadores> {
         },
       );
 
-      debugPrint(jsonEncode(c));
-
       Contador ansContador = Contador.fromJson(jsonDecode(ans.body));
       Listado().contadores[index].id = ansContador.id!;
 
@@ -267,7 +265,6 @@ class _VerContadoresState extends State<VerContadores> {
   }
 
   BorderRadiusGeometry borderGenerator(int pos, Orientation o) {
-    debugPrint(pos.toString());
     if (o == Orientation.landscape || Listado().contadores.length == 1) {
       return BorderRadius.circular(25);
     } else {
